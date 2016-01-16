@@ -41,7 +41,7 @@ func Renameat2(olddirfd int, oldpath string, newdirfd int, newpath string, flags
 	if err != nil {
 		return
 	}
-	_, _, err = unix.Syscall6(
+	_, _, errno := unix.Syscall6(
 		SYS_RENAMEAT2,
 		uintptr(olddirfd),
 		uintptr(unsafe.Pointer(oldPtr)),
@@ -53,12 +53,16 @@ func Renameat2(olddirfd int, oldpath string, newdirfd int, newpath string, flags
 	use(unsafe.Pointer(oldPtr))
 	use(unsafe.Pointer(newPtr))
 
-	// In the syscall module the authors box a couple of common errors
-	// (i.e EAGAIN, EINVAL, and ENOENT). Is that worth doing here?
+	if errno != 0 {
+		// In the syscall module the authors box a couple of common errors
+		// (i.e EAGAIN, EINVAL, and ENOENT). Is that worth doing here?
+		err = errno
+	}
 
 	return
 }
 
 func Exchange(oldpath string, newpath string) (err error) {
+	// TODO Should we return an os.LinkError on error? What about on ENOSYS?
 	return Renameat2(unix.AT_FDCWD, oldpath, unix.AT_FDCWD, newpath, EXCHANGE)
 }
