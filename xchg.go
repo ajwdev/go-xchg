@@ -62,7 +62,7 @@ func Renameat2(olddirfd int, oldpath string, newdirfd int, newpath string, flags
 	return
 }
 
-func Exchange(oldpath string, newpath string) (err error) {
+func Exchange(oldpath, newpath string) error {
 	// TODO Should we return an os.LinkError on error? What about on ENOSYS?
 	return Renameat2(unix.AT_FDCWD, oldpath, unix.AT_FDCWD, newpath, EXCHANGE)
 }
