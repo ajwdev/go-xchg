@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/TheDude05/go-xchg"
+	"github.com/williamsandrew/go-xchg"
 	"log"
 	"os"
 	"syscall"
